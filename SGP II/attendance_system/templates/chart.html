@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Script Reference[1] -->
+  <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</head>
+<body >
+	<nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+		<img src="{% static 'images/logo.png' %}" height="50px" width="250px">
+		 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+		   <span class="navbar-toggler-icon"></span>
+		 </button>
+		 <div class="collapse navbar-collapse" id="navbarNav">
+		   <ul class="navbar-nav ml-auto">
+			 <li class="nav-item active">
+	   
+			   <span class="nav-link">Hello, {{request.session.fetch_username}}</span>
+			 </li>
+			 <li class="nav-item active">
+			   <a href="{% url 'admin_home' %}" class="nav-link">Home</a>
+			 </li>
+			 <li class="nav-item">
+			   
+			   <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+			 </li>
+		   </ul>
+		 </div>
+	   </nav>
+  <!-- Chart Placement[2] -->
+  <div id="myChart" style="width: 75%; margin-top: 10%;margin-left: 30%;"></div>
+
+  <script>
+	var dataurl = '/chart/'
+	$.ajax({
+		method:'GET',
+		url:dataurl,
+		success:function(request){
+			console.log('RESPONSE:',Response)
+
+		}
+	})
+		var monthNames = ["","January", "February", "March", "April", "May", "June","July", "August", "September", "October", "November", "December"];
+		var d = new Date();
+    	var month = d.getMonth;
+		let myConfig = {
+			type: 'bar',
+			title: {
+			  text: 'Attendance Chart',
+			  fontSize: 30,
+			},
+			legend: {
+			  draggable: true,
+			},
+			scaleX: {
+			  // Set scale label
+			  label: { text: 'id' },
+			  // Convert text on scale indices
+			  labels:{{labels}},
+			},
+			scaleY: {
+			  // Scale label with unicode character
+			  label: { text: 'Attendance(hour)' }
+			},
+			plot: {
+			 animation: {
+				effect: 'ANIMATION_EXPAND_BOTTOM',
+				method: 'ANIMATION_STRONG_EASE_OUT',
+				sequence: 'ANIMATION_BY_NODE',
+				speed: 275,
+			  }
+			},
+			series: [
+			  {
+				values: {{data}},
+				backgroundColor: '#8ee9de',
+				text:monthNames[{{this_month}}],
+			  }
+			]
+		};
+	
+    
+
+    // Render Method[3]
+    zingchart.render({
+      id: 'myChart',
+      data: myConfig,
+	  height: '90%',
+      width: '40%'
+    });
+  </script>
+</body>
+</html>
